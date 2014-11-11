@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <script type="text/javascript"  src="jquery.js"></script>
+    <script type="text/javascript"  src="OpenLayers.js"></script>
+        <link type="text/css" rel="stylesheet" href="jquery.qtip.min.css" />
+    <script type="text/javascript" src="jquery.qtip.min.js"></script>
+    <script type="text/javascript"  src="MyMap.js"></script>
+
+
+
+</head>
+<body>
+
+
+    <div id="map" style="width:600px; height:500px;">
+
+    </div>
+
+    <script>
+
+        $(document).ready(function () {
+
+            var map = window.map = $('#map').createMap('http://127.0.0.1:8080');
+
+            console.log("index 1" + map);
+
+            map.setZoomLevel(10);
+            map.setLocation(30.6164, 52.5198);
+
+            var icon = map.putIcon(30.6164, 52.5198, 'a.png');
+
+            icon.click(function (e) {
+                console.log("click");
+            });
+
+            icon.mouseover(function (e) {
+                console.log("mouse over");
+            });
+
+            icon.mouseout(function (e) {
+                console.log("mouse out");
+            });
+           // icon.tooltip("<div>i am an icon</div><br /><input type='button' value='click me!' />");
+
+            map.putIcon(31.6164, 52.5198, 'a.png');
+            map.putIcon(30.6164, 53.5198, 'a.png');
+
+            map.drawLine({ lat: 31.6164, lon: 52.5198 }, { lat: 30.6164, lon: 53.5198 }, {strokeColor:"#00ff00"});
+
+            var line = map.drawLine({ lat: 30.6164, lon: 52.5198 }, { lat: 30.6164, lon: 53.5198 }, { strokeColor: "#0000ff" });
+            line.mouseover(function (e) {
+                console.log(e);
+            });
+
+            line.tooltip("<div>salam</div>");
+
+        });
+    </script>
+    
+</body>
+</html>
