@@ -7,7 +7,7 @@
 
     <script type="text/javascript"  src="jquery.js"></script>
     <script type="text/javascript"  src="OpenLayers.js"></script>
-        <link type="text/css" rel="stylesheet" href="jquery.qtip.min.css" />
+    <link type="text/css" rel="stylesheet" href="jquery.qtip.min.css" />
     <script type="text/javascript" src="jquery.qtip.min.js"></script>
     <script type="text/javascript"  src="MyMap.js"></script>
 
@@ -25,9 +25,18 @@
 
         $(document).ready(function () {
 
-            var map = window.map = $('#map').createMap('http://127.0.0.1:8080');
+            //var map = window.map = $('#map').createMap('http://79.175.166.110:8080');
 
-            console.log("index 1" + map);
+            
+            var map = window.map = $('#map').createMap();
+
+            map.mousemove(function (e) {
+                //console.log(e);
+            });
+
+            map.click(function (e) {
+                console.log(e.latlong);
+            });
 
             map.setZoomLevel(10);
             map.setLocation(30.6164, 52.5198);
@@ -45,7 +54,8 @@
             icon.mouseout(function (e) {
                 console.log("mouse out");
             });
-           // icon.tooltip("<div>i am an icon</div><br /><input type='button' value='click me!' />");
+
+            icon.tooltip("<div>i am an icon</div><br /><input type='button' value='click me!' />");
 
             map.putIcon(31.6164, 52.5198, 'a.png');
             map.putIcon(30.6164, 53.5198, 'a.png');
@@ -57,7 +67,6 @@
                 console.log(e);
             });
 
-            line.tooltip("<div>salam</div>");
 
         });
     </script>

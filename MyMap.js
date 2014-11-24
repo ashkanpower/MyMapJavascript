@@ -5,19 +5,60 @@
 
         var _layers = this._layers = {};
 
-        var map = this.map = new OpenLayers.Map({
-            div: "map",
-            allOverlays: true,
-            layers: [
-            new OpenLayers.Layer.OSM("MyTiles", serverAddress + "/tiles/${z}/${x}/${y}.png", {
+        var customLayer =
+            new OpenLayers.Layer.OSM();
+
+
+        if (serverAddress !== undefined) {
+
+            customLayer = new OpenLayers.Layer.OSM("MyTiles", serverAddress + "/tiles/${z}/${x}/${y}.png", {
                 numZoomLevels: 20,
                 isBaseLayer: false
-            })
-            ]
+            });
+
+        }
+
+        var map = this.map = new OpenLayers.Map({
+            div: $(this)[0].id,
+            allOverlays: true
         });
+
+        map.addLayer(customLayer);
+
+        var _click = this._click = function () { };
+        this.click = function (f) {
+            _click = f;
+        }
+
+        var _mousemove = this._mousemove = function () { };
+        this.mousemove = function (f) {
+            _mousemove = f;
+        }
 
         this.map.events.register("mousemove", map, function (e) {
             map.mouseposition = e.xy;
+
+            var position = this.events.getMousePosition(e);
+            var latlon = map.getLonLatFromViewPortPx(e.xy);
+
+            e.latlong = new OpenLayers.Geometry.Point(latlon.lon, latlon.lat).transform(
+                new OpenLayers.Projection("EPSG:900913"),
+                new OpenLayers.Projection("EPSG:4326"));;
+
+            _mousemove(e);
+        });
+
+        this.map.events.register("click", map, function (e) {
+            map.mouseposition = e.xy;
+
+            var position = this.events.getMousePosition(e);
+            var latlon = map.getLonLatFromViewPortPx(e.xy);
+
+            e.latlong = new OpenLayers.Geometry.Point(latlon.lon, latlon.lat).transform(
+                new OpenLayers.Projection("EPSG:900913"),
+                new OpenLayers.Projection("EPSG:4326"));;
+
+            _click(e);
         });
 
         this.map.setCenter(new OpenLayers.LonLat(52.5198, 29.6164).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), 10);
@@ -31,6 +72,12 @@
             map.setCenter(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), map.zoom);
             return this;
         };
+
+        this.clear = function () {
+            this._getlayerDefault().clear();
+        }
+
+        
 
         this.putIcon = function (lat, lon, icon) {
 
@@ -138,36 +185,32 @@
 
                         //console.log('#' + g.id);
 
-                        $('#' + g.id).mousemove(function (e) {
-                            
-                            var div = $('<div style="position:absolute; top:10px; left:200px; z-index:9999999;"></div>');
-                            div.css({top:map.mouseposition.y,left:map.mouseposition.x});
+                        /*
+                        var div = $('<div style="position:absolute; top:10px; left:200px; z-index:9999999;"></div>');
+                        div.css({top:map.mouseposition.y,left:map.mouseposition.x});
 
-                            div.append($(object._popup));
+                        div.append($(object._popup));
 
-                            $('body').append(div);
+                        $('body').append(div);*/
 
-                            /*$(this).qtip({
-                                content: {
-                                    text: $(object._popup)
-                                },
-                                position: {
-                                    // my: 'bottom center',
-                                    //at: 'top center',
-                                    adjust: { mouse: true }
-                                },
-                                style: {
-                                    classes: 'qtip-green'
-                                }, hide: { event: true }
-                            });
-                            $('#' + g.id).qtip('show');*/
-
+                        $('#' + g.id).qtip({
+                            content: {
+                                text: $(object._popup)
+                            },
+                            position: {
+                                my: 'bottom center',
+                                at: 'top center',
+                            },
+                            style: {
+                                classes: 'qtip-green'
+                            }
                         });
-
+                        $('#' + g.id).qtip('show');
+                    }
                        
 
                         //console.log(e);
-                    }
+        
 
                 });
 
